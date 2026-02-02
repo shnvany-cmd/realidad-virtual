@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Jardín VR Interactivo</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <style>
+      body { margin: 0; }
+      #ui-panel {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        display: none;
+        z-index: 999;
+      }
+      #ui-panel.visible {
+        display: block;
+      }
+      .grow-button {
+        background: #4CC3D9;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      .grow-button:hover {
+        background: #2BA3A9;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ui-panel">
+      <p id="plant-type" style="font-weight: bold; color: #4CC3D9;">Planta cercana</p>
+      <p id="plant-name" style="font-size: 12px; margin: 5px 0;">-</p>
+      <button class="grow-button" id="grow-btn">Hacer Crecer Planta</button>
+    </div>
+
+    <a-scene>
+      <!-- Cielo -->
+      <a-sky color="#87CEEB"></a-sky>
+
+      <!-- Suelo del jardín -->
+      <a-plane rotation="-90 0 0" width="100" height="100" color="#7BC8A4" position="0 0 0"></a-plane>
+
+      <!-- CAMINO PRINCIPAL (horizontal) -->
+      <a-plane rotation="-90 0 0" width="100" height="3" color="#D2691E" position="0 0.01 0"></a-plane>
+
+      <!-- CAMINO SECUNDARIO (vertical) -->
+      <a-plane rotation="-90 0 0" width="3" height="100" color="#D2691E" position="0 0.01 0"></a-plane>
+
+      <!-- Luz ambiental -->
+      <a-light type="ambient" color="#FFF" intensity="0.6"></a-light>
+      <a-light type="directional" color="#FFF" intensity="0.8" position="5 10 5"></a-light>
+
+      <!-- ============== HUERTA 1: ROSAS (Izquierda-Arriba) ============== -->
+      <!-- Cartel Rosas -->
+      <a-entity position="-8 0 -12">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🌹 ROSAS" align="center" anchor="center" position="0 1.5 0.1" scale="2 2 2" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Rosas -->
+      <a-entity id="plant-1" position="-9.5 0 -10" class="plant" data-type="flower" data-species="Rosa">
+        <a-cylinder radius="0.08" height="0.7" color="#2D5016" position="0 0.35 0"></a-cylinder>
+        <a-sphere radius="0.15" color="#FF1493" position="0 0.95 0"></a-sphere>
+        <a-sphere radius="0.08" color="#FFB6C1" position="0.12 0.95 0"></a-sphere>
+        <a-sphere radius="0.08" color="#FFB6C1" position="-0.12 0.95 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-2" position="-8 0 -10" class="plant" data-type="flower" data-species="Rosa">
+        <a-cylinder radius="0.08" height="0.65" color="#2D5016" position="0 0.325 0"></a-cylinder>
+        <a-sphere radius="0.14" color="#FF1493" position="0 0.9 0"></a-sphere>
+        <a-sphere radius="0.07" color="#FFB6C1" position="0.11 0.9 0"></a-sphere>
+        <a-sphere radius="0.07" color="#FFB6C1" position="-0.11 0.9 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-3" position="-6.5 0 -10" class="plant" data-type="flower" data-species="Rosa">
+        <a-cylinder radius="0.08" height="0.75" color="#2D5016" position="0 0.375 0"></a-cylinder>
+        <a-sphere radius="0.16" color="#FF1493" position="0 1.0 0"></a-sphere>
+        <a-sphere radius="0.08" color="#FFB6C1" position="0.13 1.0 0"></a-sphere>
+        <a-sphere radius="0.08" color="#FFB6C1" position="-0.13 1.0 0"></a-sphere>
+      </a-entity>
+
+      <!-- ============== HUERTA 2: TULIPANES (Izquierda-Centro) ============== -->
+      <!-- Cartel Tulipanes -->
+      <a-entity position="-8 0 0">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🌷 TULIPANES" align="center" anchor="center" position="0 1.5 0.1" scale="1.8 1.8 1.8" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Tulipanes -->
+      <a-entity id="plant-4" position="-9.5 0 2" class="plant" data-type="flower" data-species="Tulipán">
+        <a-cylinder radius="0.06" height="0.6" color="#2D5016" position="0 0.3 0"></a-cylinder>
+        <a-cone radius="0.12" height="0.2" color="#FFD700" position="0 0.65 0"></a-cone>
+        <a-cone radius="0.1" height="0.18" color="#FFA500" position="0 0.85 0"></a-cone>
+      </a-entity>
+      <a-entity id="plant-5" position="-8 0 2" class="plant" data-type="flower" data-species="Tulipán">
+        <a-cylinder radius="0.06" height="0.58" color="#2D5016" position="0 0.29 0"></a-cylinder>
+        <a-cone radius="0.11" height="0.19" color="#FFD700" position="0 0.64 0"></a-cone>
+        <a-cone radius="0.09" height="0.17" color="#FFA500" position="0 0.83 0"></a-cone>
+      </a-entity>
+      <a-entity id="plant-6" position="-6.5 0 2" class="plant" data-type="flower" data-species="Tulipán">
+        <a-cylinder radius="0.07" height="0.62" color="#2D5016" position="0 0.31 0"></a-cylinder>
+        <a-cone radius="0.13" height="0.21" color="#FFD700" position="0 0.67 0"></a-cone>
+        <a-cone radius="0.11" height="0.19" color="#FFA500" position="0 0.88 0"></a-cone>
+      </a-entity>
+
+      <!-- ============== HUERTA 3: GIRASOLES (Centro-Arriba) ============== -->
+      <!-- Cartel Girasoles -->
+      <a-entity position="0 0 -12">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🌻 GIRASOLES" align="center" anchor="center" position="0 1.5 0.1" scale="1.8 1.8 1.8" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Girasoles -->
+      <a-entity id="plant-7" position="-1.5 0 -10" class="plant" data-type="flower" data-species="Girasol">
+        <a-cylinder radius="0.12" height="1.2" color="#2D5016" position="0 0.6 0"></a-cylinder>
+        <a-sphere radius="0.25" color="#FFD700" position="0 1.35 0"></a-sphere>
+        <a-sphere radius="0.12" color="#FFA500" position="0 1.35 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-8" position="0 0 -10" class="plant" data-type="flower" data-species="Girasol">
+        <a-cylinder radius="0.12" height="1.3" color="#2D5016" position="0 0.65 0"></a-cylinder>
+        <a-sphere radius="0.27" color="#FFD700" position="0 1.45 0"></a-sphere>
+        <a-sphere radius="0.13" color="#FFA500" position="0 1.45 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-9" position="1.5 0 -10" class="plant" data-type="flower" data-species="Girasol">
+        <a-cylinder radius="0.11" height="1.15" color="#2D5016" position="0 0.575 0"></a-cylinder>
+        <a-sphere radius="0.24" color="#FFD700" position="0 1.3 0"></a-sphere>
+        <a-sphere radius="0.12" color="#FFA500" position="0 1.3 0"></a-sphere>
+      </a-entity>
+
+      <!-- ============== HUERTA 4: LOTOS (Centro-Abajo) ============== -->
+      <!-- Cartel Lotos -->
+      <a-entity position="0 0 12">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🪷 LOTOS" align="center" anchor="center" position="0 1.5 0.1" scale="2 2 2" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Lotos -->
+      <a-entity id="plant-10" position="-1.5 0 14" class="plant" data-type="flower" data-species="Loto">
+        <a-cylinder radius="0.05" height="0.4" color="#2D5016" position="0 0.2 0"></a-cylinder>
+        <a-sphere radius="0.18" color="#FF69B4" position="0 0.55 0"></a-sphere>
+        <a-sphere radius="0.09" color="#FFB6C1" position="0.14 0.5 0"></a-sphere>
+        <a-sphere radius="0.09" color="#FFB6C1" position="-0.14 0.5 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-11" position="0 0 14" class="plant" data-type="flower" data-species="Loto">
+        <a-cylinder radius="0.05" height="0.42" color="#2D5016" position="0 0.21 0"></a-cylinder>
+        <a-sphere radius="0.19" color="#FF69B4" position="0 0.58 0"></a-sphere>
+        <a-sphere radius="0.09" color="#FFB6C1" position="0.15 0.53 0"></a-sphere>
+        <a-sphere radius="0.09" color="#FFB6C1" position="-0.15 0.53 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-12" position="1.5 0 14" class="plant" data-type="flower" data-species="Loto">
+        <a-cylinder radius="0.05" height="0.38" color="#2D5016" position="0 0.19 0"></a-cylinder>
+        <a-sphere radius="0.17" color="#FF69B4" position="0 0.52 0"></a-sphere>
+        <a-sphere radius="0.08" color="#FFB6C1" position="0.13 0.48 0"></a-sphere>
+        <a-sphere radius="0.08" color="#FFB6C1" position="-0.13 0.48 0"></a-sphere>
+      </a-entity>
+
+      <!-- ============== HUERTA 5: HELECHOS (Derecha-Arriba) ============== -->
+      <!-- Cartel Helechos -->
+      <a-entity position="8 0 -12">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🌿 HELECHOS" align="center" anchor="center" position="0 1.5 0.1" scale="1.8 1.8 1.8" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Helechos -->
+      <a-entity id="plant-13" position="6.5 0 -10" class="plant" data-type="shrub" data-species="Helecho">
+        <a-cylinder radius="0.15" height="0.9" color="#1a4d1a" position="0 0.45 0"></a-cylinder>
+        <a-sphere radius="0.25" color="#228B22" position="0 1.0 0"></a-sphere>
+        <a-sphere radius="0.2" color="#2E8B57" position="0.15 0.85 0"></a-sphere>
+        <a-sphere radius="0.2" color="#2E8B57" position="-0.15 0.85 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-14" position="8 0 -10" class="plant" data-type="shrub" data-species="Helecho">
+        <a-cylinder radius="0.16" height="0.95" color="#1a4d1a" position="0 0.475 0"></a-cylinder>
+        <a-sphere radius="0.26" color="#228B22" position="0 1.1 0"></a-sphere>
+        <a-sphere radius="0.21" color="#2E8B57" position="0.16 0.9 0"></a-sphere>
+        <a-sphere radius="0.21" color="#2E8B57" position="-0.16 0.9 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-15" position="9.5 0 -10" class="plant" data-type="shrub" data-species="Helecho">
+        <a-cylinder radius="0.14" height="0.85" color="#1a4d1a" position="0 0.425 0"></a-cylinder>
+        <a-sphere radius="0.24" color="#228B22" position="0 0.95 0"></a-sphere>
+        <a-sphere radius="0.2" color="#2E8B57" position="0.14 0.8 0"></a-sphere>
+        <a-sphere radius="0.2" color="#2E8B57" position="-0.14 0.8 0"></a-sphere>
+      </a-entity>
+
+      <!-- ============== HUERTA 6: LAURELES (Derecha-Centro) ============== -->
+      <!-- Cartel Laureles -->
+      <a-entity position="8 0 0">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🌲 LAURELES" align="center" anchor="center" position="0 1.5 0.1" scale="1.8 1.8 1.8" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Laureles -->
+      <a-entity id="plant-16" position="6.5 0 2" class="plant" data-type="shrub" data-species="Laurel">
+        <a-cylinder radius="0.18" height="1.0" color="#1a4d1a" position="0 0.5 0"></a-cylinder>
+        <a-sphere radius="0.28" color="#3CB371" position="0 1.2 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-17" position="8 0 2" class="plant" data-type="shrub" data-species="Laurel">
+        <a-cylinder radius="0.19" height="1.05" color="#1a4d1a" position="0 0.525 0"></a-cylinder>
+        <a-sphere radius="0.29" color="#3CB371" position="0 1.25 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-18" position="9.5 0 2" class="plant" data-type="shrub" data-species="Laurel">
+        <a-cylinder radius="0.17" height="0.95" color="#1a4d1a" position="0 0.475 0"></a-cylinder>
+        <a-sphere radius="0.27" color="#3CB371" position="0 1.15 0"></a-sphere>
+      </a-entity>
+
+      <!-- ============== HUERTA 7: BOJE (Derecha-Abajo) ============== -->
+      <!-- Cartel Boje -->
+      <a-entity position="8 0 12">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🌱 BOJE" align="center" anchor="center" position="0 1.5 0.1" scale="2 2 2" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Boje -->
+      <a-entity id="plant-19" position="6.5 0 14" class="plant" data-type="shrub" data-species="Boj">
+        <a-cylinder radius="0.13" height="0.8" color="#1a4d1a" position="0 0.4 0"></a-cylinder>
+        <a-sphere radius="0.23" color="#2F4F2F" position="0 0.95 0"></a-sphere>
+        <a-sphere radius="0.15" color="#228B22" position="0.13 0.8 0"></a-sphere>
+        <a-sphere radius="0.15" color="#228B22" position="-0.13 0.8 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-20" position="8 0 14" class="plant" data-type="shrub" data-species="Boj">
+        <a-cylinder radius="0.14" height="0.85" color="#1a4d1a" position="0 0.425 0"></a-cylinder>
+        <a-sphere radius="0.24" color="#2F4F2F" position="0 1.0 0"></a-sphere>
+        <a-sphere radius="0.16" color="#228B22" position="0.14 0.85 0"></a-sphere>
+        <a-sphere radius="0.16" color="#228B22" position="-0.14 0.85 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-21" position="9.5 0 14" class="plant" data-type="shrub" data-species="Boj">
+        <a-cylinder radius="0.12" height="0.75" color="#1a4d1a" position="0 0.375 0"></a-cylinder>
+        <a-sphere radius="0.22" color="#2F4F2F" position="0 0.9 0"></a-sphere>
+        <a-sphere radius="0.14" color="#228B22" position="0.12 0.75 0"></a-sphere>
+        <a-sphere radius="0.14" color="#228B22" position="-0.12 0.75 0"></a-sphere>
+      </a-entity>
+
+      <!-- ============== HUERTA 8: NENUFARES (Fondo-Izquierda) ============== -->
+      <!-- Cartel Nenúfares -->
+      <a-entity position="-8 0 28">
+        <a-plane width="3.5" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🪷 NENÚFARES" align="center" anchor="center" position="0 1.5 0.1" scale="1.6 1.6 1.6" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Nenúfares -->
+      <a-entity id="plant-22" position="-9.5 0 30" class="plant" data-type="aquatic" data-species="Nenúfar">
+        <a-cylinder radius="0.08" height="0.25" color="#1a4d1a" position="0 0.125 0"></a-cylinder>
+        <a-cylinder radius="0.25" height="0.05" color="#90EE90" position="0 0.3 0"></a-cylinder>
+        <a-sphere radius="0.15" color="#FF1493" position="0 0.4 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-23" position="-8 0 30" class="plant" data-type="aquatic" data-species="Nenúfar">
+        <a-cylinder radius="0.08" height="0.2" color="#1a4d1a" position="0 0.1 0"></a-cylinder>
+        <a-cylinder radius="0.23" height="0.05" color="#90EE90" position="0 0.28 0"></a-cylinder>
+        <a-sphere radius="0.14" color="#FF69B4" position="0 0.38 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-24" position="-6.5 0 30" class="plant" data-type="aquatic" data-species="Nenúfar">
+        <a-cylinder radius="0.08" height="0.23" color="#1a4d1a" position="0 0.115 0"></a-cylinder>
+        <a-cylinder radius="0.24" height="0.05" color="#90EE90" position="0 0.29 0"></a-cylinder>
+        <a-sphere radius="0.15" color="#FF1493" position="0 0.39 0"></a-sphere>
+      </a-entity>
+
+      <!-- ============== HUERTA 9: ALGAS (Fondo-Centro) ============== -->
+      <!-- Cartel Algas -->
+      <a-entity position="0 0 28">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🌿 ALGAS" align="center" anchor="center" position="0 1.5 0.1" scale="2 2 2" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Algas -->
+      <a-entity id="plant-25" position="-1.5 0 30" class="plant" data-type="aquatic" data-species="Alga">
+        <a-cylinder radius="0.04" height="0.8" color="#006400" position="0 0.4 0"></a-cylinder>
+        <a-cylinder radius="0.04" height="0.8" color="#228B22" position="0.08 0.4 0.08"></a-cylinder>
+        <a-cylinder radius="0.04" height="0.8" color="#228B22" position="-0.08 0.4 -0.08"></a-cylinder>
+      </a-entity>
+      <a-entity id="plant-26" position="0 0 30" class="plant" data-type="aquatic" data-species="Alga">
+        <a-cylinder radius="0.04" height="0.85" color="#006400" position="0 0.425 0"></a-cylinder>
+        <a-cylinder radius="0.04" height="0.85" color="#228B22" position="0.085 0.425 0.085"></a-cylinder>
+        <a-cylinder radius="0.04" height="0.85" color="#228B22" position="-0.085 0.425 -0.085"></a-cylinder>
+      </a-entity>
+      <a-entity id="plant-27" position="1.5 0 30" class="plant" data-type="aquatic" data-species="Alga">
+        <a-cylinder radius="0.04" height="0.9" color="#006400" position="0 0.45 0"></a-cylinder>
+        <a-cylinder radius="0.04" height="0.9" color="#228B22" position="0.09 0.45 0.09"></a-cylinder>
+        <a-cylinder radius="0.04" height="0.9" color="#228B22" position="-0.09 0.45 -0.09"></a-cylinder>
+      </a-entity>
+
+      <!-- ============== HUERTA 10: ROBLES (Fondo-Derecha) ============== -->
+      <!-- Cartel Robles -->
+      <a-entity position="8 0 28">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🌳 ROBLES" align="center" anchor="center" position="0 1.5 0.1" scale="2 2 2" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Robles -->
+      <a-entity id="plant-28" position="5.5 0 30" class="plant" data-type="tree" data-species="Roble">
+        <a-cylinder radius="0.4" height="8.0" color="#654321" position="0 4.0 0"></a-cylinder>
+        <a-sphere radius="1.0" color="#228B22" position="0 8.2 0"></a-sphere>
+        <a-sphere radius="0.85" color="#2E8B57" position="0.6 7.5 0"></a-sphere>
+        <a-sphere radius="0.85" color="#2E8B57" position="-0.6 7.5 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-29" position="8 0 30" class="plant" data-type="tree" data-species="Roble">
+        <a-cylinder radius="0.42" height="8.5" color="#654321" position="0 4.25 0"></a-cylinder>
+        <a-sphere radius="1.05" color="#228B22" position="0 8.7 0"></a-sphere>
+        <a-sphere radius="0.9" color="#2E8B57" position="0.65 7.9 0"></a-sphere>
+        <a-sphere radius="0.9" color="#2E8B57" position="-0.65 7.9 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-30" position="10.5 0 30" class="plant" data-type="tree" data-species="Roble">
+        <a-cylinder radius="0.38" height="7.5" color="#654321" position="0 3.75 0"></a-cylinder>
+        <a-sphere radius="0.95" color="#228B22" position="0 7.7 0"></a-sphere>
+        <a-sphere radius="0.8" color="#2E8B57" position="0.55 7.0 0"></a-sphere>
+        <a-sphere radius="0.8" color="#2E8B57" position="-0.55 7.0 0"></a-sphere>
+      </a-entity>
+
+      <!-- ============== HUERTA 11: PINOS (Muy Fondo-Izquierda) ============== -->
+      <!-- Cartel Pinos -->
+      <a-entity position="0 0 35">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🌲 PINOS" align="center" anchor="center" position="0 1.5 0.1" scale="2 2 2" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Pinos -->
+      <a-entity id="plant-31" position="-1.5 0 35" class="plant" data-type="tree" data-species="Pino">
+        <a-cylinder radius="0.35" height="9.0" color="#654321" position="0 4.5 0"></a-cylinder>
+        <a-cone radius="1.2" height="2.5" color="#1a4d1a" position="0 8.0 0"></a-cone>
+        <a-cone radius="0.8" height="1.8" color="#228B22" position="0 6.5 0"></a-cone>
+      </a-entity>
+      <a-entity id="plant-32" position="0 0 35" class="plant" data-type="tree" data-species="Pino">
+        <a-cylinder radius="0.37" height="9.5" color="#654321" position="0 4.75 0"></a-cylinder>
+        <a-cone radius="1.25" height="2.6" color="#1a4d1a" position="0 8.3 0"></a-cone>
+        <a-cone radius="0.85" height="1.9" color="#228B22" position="0 6.8 0"></a-cone>
+      </a-entity>
+      <a-entity id="plant-33" position="1.5 0 35" class="plant" data-type="tree" data-species="Pino">
+        <a-cylinder radius="0.33" height="8.5" color="#654321" position="0 4.25 0"></a-cylinder>
+        <a-cone radius="1.15" height="2.4" color="#1a4d1a" position="0 7.7 0"></a-cone>
+        <a-cone radius="0.75" height="1.7" color="#228B22" position="0 6.2 0"></a-cone>
+      </a-entity>
+
+      <!-- ============== HUERTA 12: ABEDULES (Muy Fondo-Derecha) ============== -->
+      <!-- Cartel Abedules -->
+      <a-entity position="8 0 35">
+        <a-plane width="3" height="1.2" color="#8B4513" position="0 1.5 0"></a-plane>
+        <a-text value="🌳 ABEDULES" align="center" anchor="center" position="0 1.5 0.1" scale="1.8 1.8 1.8" color="white"></a-text>
+      </a-entity>
+      <!-- Plantas Abedules -->
+      <a-entity id="plant-34" position="5.5 0 35" class="plant" data-type="tree" data-species="Abedul">
+        <a-cylinder radius="0.28" height="7.5" color="#D3D3D3" position="0 3.75 0"></a-cylinder>
+        <a-sphere radius="0.9" color="#90EE90" position="0 7.7 0"></a-sphere>
+        <a-sphere radius="0.75" color="#7CFC00" position="0.45 7.0 0"></a-sphere>
+        <a-sphere radius="0.75" color="#7CFC00" position="-0.45 7.0 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-35" position="8 0 35" class="plant" data-type="tree" data-species="Abedul">
+        <a-cylinder radius="0.3" height="8.0" color="#D3D3D3" position="0 4.0 0"></a-cylinder>
+        <a-sphere radius="0.95" color="#90EE90" position="0 8.2 0"></a-sphere>
+        <a-sphere radius="0.8" color="#7CFC00" position="0.5 7.4 0"></a-sphere>
+        <a-sphere radius="0.8" color="#7CFC00" position="-0.5 7.4 0"></a-sphere>
+      </a-entity>
+      <a-entity id="plant-36" position="10.5 0 35" class="plant" data-type="tree" data-species="Abedul">
+        <a-cylinder radius="0.26" height="7.0" color="#D3D3D3" position="0 3.5 0"></a-cylinder>
+        <a-sphere radius="0.85" color="#90EE90" position="0 7.2 0"></a-sphere>
+        <a-sphere radius="0.7" color="#7CFC00" position="0.4 6.5 0"></a-sphere>
+        <a-sphere radius="0.7" color="#7CFC00" position="-0.4 6.5 0"></a-sphere>
+      </a-entity>
+
+      <!-- Cámara del usuario (con controles) -->
+      <a-entity camera="active: true" position="0 1.6 5" wasd-controls look-controls></a-entity>
+
+    </a-scene>
+
+    <script>
+      // Mapeo de plantas por especie
+      const plantInfo = {
+        'plant-1': { name: 'Rosa #1', type: 'Flor', species: 'Rosas', color: '#FF1493' },
+        'plant-2': { name: 'Rosa #2', type: 'Flor', species: 'Rosas', color: '#FF1493' },
+        'plant-3': { name: 'Rosa #3', type: 'Flor', species: 'Rosas', color: '#FF1493' },
+        'plant-4': { name: 'Tulipán #1', type: 'Flor', species: 'Tulipanes', color: '#FFD700' },
+        'plant-5': { name: 'Tulipán #2', type: 'Flor', species: 'Tulipanes', color: '#FFD700' },
+        'plant-6': { name: 'Tulipán #3', type: 'Flor', species: 'Tulipanes', color: '#FFD700' },
+        'plant-7': { name: 'Girasol #1', type: 'Flor', species: 'Girasoles', color: '#FFD700' },
+        'plant-8': { name: 'Girasol #2', type: 'Flor', species: 'Girasoles', color: '#FFD700' },
+        'plant-9': { name: 'Girasol #3', type: 'Flor', species: 'Girasoles', color: '#FFD700' },
+        'plant-10': { name: 'Loto #1', type: 'Flor', species: 'Lotos', color: '#FF69B4' },
+        'plant-11': { name: 'Loto #2', type: 'Flor', species: 'Lotos', color: '#FF69B4' },
+        'plant-12': { name: 'Loto #3', type: 'Flor', species: 'Lotos', color: '#FF69B4' },
+        'plant-13': { name: 'Helecho #1', type: 'Arbusto', species: 'Helechos', color: '#228B22' },
+        'plant-14': { name: 'Helecho #2', type: 'Arbusto', species: 'Helechos', color: '#228B22' },
+        'plant-15': { name: 'Helecho #3', type: 'Arbusto', species: 'Helechos', color: '#228B22' },
+        'plant-16': { name: 'Laurel #1', type: 'Arbusto', species: 'Laureles', color: '#3CB371' },
+        'plant-17': { name: 'Laurel #2', type: 'Arbusto', species: 'Laureles', color: '#3CB371' },
+        'plant-18': { name: 'Laurel #3', type: 'Arbusto', species: 'Laureles', color: '#3CB371' },
+        'plant-19': { name: 'Boj #1', type: 'Arbusto', species: 'Boje', color: '#2F4F2F' },
+        'plant-20': { name: 'Boj #2', type: 'Arbusto', species: 'Boje', color: '#2F4F2F' },
+        'plant-21': { name: 'Boj #3', type: 'Arbusto', species: 'Boje', color: '#2F4F2F' },
+        'plant-22': { name: 'Nenúfar #1', type: 'Acuática', species: 'Nenúfares', color: '#FF1493' },
+        'plant-23': { name: 'Nenúfar #2', type: 'Acuática', species: 'Nenúfares', color: '#FF69B4' },
+        'plant-24': { name: 'Nenúfar #3', type: 'Acuática', species: 'Nenúfares', color: '#FF1493' },
+        'plant-25': { name: 'Alga #1', type: 'Acuática', species: 'Algas', color: '#228B22' },
+        'plant-26': { name: 'Alga #2', type: 'Acuática', species: 'Algas', color: '#228B22' },
+        'plant-27': { name: 'Alga #3', type: 'Acuática', species: 'Algas', color: '#228B22' },
+        'plant-28': { name: 'Roble #1', type: 'Árbol', species: 'Robles', color: '#654321' },
+        'plant-29': { name: 'Roble #2', type: 'Árbol', species: 'Robles', color: '#654321' },
+        'plant-30': { name: 'Roble #3', type: 'Árbol', species: 'Robles', color: '#654321' },
+        'plant-31': { name: 'Pino #1', type: 'Árbol', species: 'Pinos', color: '#1a4d1a' },
+        'plant-32': { name: 'Pino #2', type: 'Árbol', species: 'Pinos', color: '#1a4d1a' },
+        'plant-33': { name: 'Pino #3', type: 'Árbol', species: 'Pinos', color: '#1a4d1a' },
+        'plant-34': { name: 'Abedul #1', type: 'Árbol', species: 'Abedules', color: '#D3D3D3' },
+        'plant-35': { name: 'Abedul #2', type: 'Árbol', species: 'Abedules', color: '#D3D3D3' },
+        'plant-36': { name: 'Abedul #3', type: 'Árbol', species: 'Abedules', color: '#D3D3D3' }
+      };
+
+      const plants = document.querySelectorAll('.plant');
+      const uiPanel = document.getElementById('ui-panel');
+      const plantTypeEl = document.getElementById('plant-type');
+      const plantNameEl = document.getElementById('plant-name');
+      const growBtn = document.getElementById('grow-btn');
+      let closestPlant = null;
+      const detectionRadius = 6; // Distancia de detección
+
+      // Función para calcular distancia 3D
+      function getDistance(pos1, pos2) {
+        const dx = pos1.x - pos2.x;
+        const dy = pos1.y - pos2.y;
+        const dz = pos1.z - pos2.z;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+      }
+
+      // Función para obtener la posición de la cámara
+      function getCameraPosition() {
+        const camera = document.querySelector('[camera]');
+        return camera.getAttribute('position');
+      }
+
+      // Función para actualizar información de la planta
+      function updatePlantInfo(plant) {
+        const plantId = plant.id;
+        const info = plantInfo[plantId];
+        
+        if (info) {
+          plantTypeEl.textContent = `📍 ${info.species}`;
+          plantTypeEl.style.color = info.color;
+          plantNameEl.textContent = `${info.name} (${info.type})`;
+        }
+      }
+
+      // Función para hacer crecer la planta
+      function growPlant(plant) {
+        if (!plant) return;
+
+        const cylinder = plant.querySelector('a-cylinder');
+        const spheres = plant.querySelectorAll('a-sphere');
+        const cones = plant.querySelectorAll('a-cone');
+
+        if (cylinder) {
+          // Aumentar altura del cilindro (eje Y)
+          const currentHeight = parseFloat(cylinder.getAttribute('height'));
+          const newHeight = currentHeight + 0.3;
+          cylinder.setAttribute('height', newHeight);
+
+          // Actualizar posición Y del cilindro
+          const cylinderPos = cylinder.getAttribute('position');
+          cylinderPos.y = newHeight / 2;
+          cylinder.setAttribute('position', cylinderPos);
+
+          // Aumentar radio (eje X y Z)
+          const currentRadius = parseFloat(cylinder.getAttribute('radius'));
+          const newRadius = currentRadius + 0.08;
+          cylinder.setAttribute('radius', newRadius);
+        }
+
+        // Hacer crecer todas las esferas
+        spheres.forEach((sphere) => {
+          const currentRadius = parseFloat(sphere.getAttribute('radius'));
+          const newRadius = currentRadius + 0.08;
+          sphere.setAttribute('radius', newRadius);
+
+          // Actualizar posición Y si es necesario
+          const pos = sphere.getAttribute('position');
+          if (pos.y > 0) {
+            pos.y += 0.15;
+            sphere.setAttribute('position', pos);
+          }
+        });
+
+        // Hacer crecer conos (para árboles)
+        cones.forEach((cone) => {
+          const currentRadius = parseFloat(cone.getAttribute('radius'));
+          const currentHeight = parseFloat(cone.getAttribute('height'));
+          const newRadius = currentRadius + 0.1;
+          const newHeight = currentHeight + 0.15;
+          
+          cone.setAttribute('radius', newRadius);
+          cone.setAttribute('height', newHeight);
+
+          // Actualizar posición Y
+          const pos = cone.getAttribute('position');
+          if (pos.y > 0) {
+            pos.y += 0.2;
+            cone.setAttribute('position', pos);
+          }
+        });
+
+        // Animación visual
+        plant.emit('grow');
+      }
+
+      // Verificar proximidad a plantas continuamente
+      setInterval(() => {
+        const cameraPos = getCameraPosition();
+        let closest = null;
+        let minDistance = detectionRadius;
+
+        plants.forEach(plant => {
+          const plantPos = plant.getAttribute('position');
+          const distance = getDistance(cameraPos, plantPos);
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closest = plant;
+          }
+        });
+
+        // Mostrar/ocultar panel si hay planta cercana
+        if (closest && closest !== closestPlant) {
+          closestPlant = closest;
+          updatePlantInfo(closestPlant);
+          uiPanel.classList.add('visible');
+        } else if (!closest && closestPlant) {
+          closestPlant = null;
+          uiPanel.classList.remove('visible');
+        }
+      }, 100);
+
+      // Evento del botón para hacer crecer
+      growBtn.addEventListener('click', () => {
+        if (closestPlant) {
+          growPlant(closestPlant);
+        }
+      });
+
+      // También permitir hacer crecer con tecla ENTER
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && closestPlant) {
+          growPlant(closestPlant);
+        }
+        
+        // Controles de cámara vertical: E para subir, Q para bajar
+        const camera = document.querySelector('a-entity[camera]');
+        if (camera) {
+          const currentPos = camera.getAttribute('position');
+          const moveAmount = 0.3; // Unidades a moverse por tecla
+          
+          if (e.key === 'e' || e.key === 'E') {
+            // Subir cámara
+            currentPos.y += moveAmount;
+            camera.setAttribute('position', currentPos);
+          } else if (e.key === 'q' || e.key === 'Q') {
+            // Bajar cámara (pero no por debajo del suelo)
+            if (currentPos.y > 0.5) {
+              currentPos.y -= moveAmount;
+              camera.setAttribute('position', currentPos);
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
