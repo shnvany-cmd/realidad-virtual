@@ -433,29 +433,37 @@
         
         const cylinder = plant.querySelector('a-cylinder');
         if (cylinder) {
+          const pos = cylinder.getAttribute('position');
           originalDimensions[plantId].cylinder = {
             radius: parseFloat(cylinder.getAttribute('radius')),
             height: parseFloat(cylinder.getAttribute('height')),
-            position: { ...cylinder.getAttribute('position') }
+            position: { x: pos.x, y: pos.y, z: pos.z }
           };
         }
         
         const spheres = plant.querySelectorAll('a-sphere');
         originalDimensions[plantId].spheres = [];
         spheres.forEach(sphere => {
+          const pos = sphere.getAttribute('position');
           originalDimensions[plantId].spheres.push({
             radius: parseFloat(sphere.getAttribute('radius')),
-            position: { ...sphere.getAttribute('position') }
+            position: { x: pos.x, y: pos.y, z: pos.z }
           });
         });
         
         const cones = plant.querySelectorAll('a-cone');
         originalDimensions[plantId].cones = [];
         cones.forEach(cone => {
+          const pos = cone.getAttribute('position');
+          const radiusBottom = cone.getAttribute('radius-bottom');
+          const radius = cone.getAttribute('radius');
           originalDimensions[plantId].cones.push({
-            radius: parseFloat(cone.getAttribute('radius')) || parseFloat(cone.getAttribute('radius-bottom')),
+            radius: radiusBottom ? parseFloat(radiusBottom) : parseFloat(radius),
+            radiusBottom: radiusBottom ? parseFloat(radiusBottom) : null,
+            radiusTop: cone.getAttribute('radius-top') ? parseFloat(cone.getAttribute('radius-top')) : null,
             height: parseFloat(cone.getAttribute('height')),
-            position: { ...cone.getAttribute('position') }
+            position: { x: pos.x, y: pos.y, z: pos.z },
+            hasRadiusBottom: !!radiusBottom
           });
         });
       });
@@ -595,7 +603,7 @@
             if (cylinder) {
               cylinder.setAttribute('radius', original.cylinder.radius);
               cylinder.setAttribute('height', original.cylinder.height);
-              cylinder.setAttribute('position', original.cylinder.position);
+              cylinder.setAttribute('position', `${original.cylinder.position.x} ${original.cylinder.position.y} ${original.cylinder.position.z}`);
             }
           }
           
@@ -605,7 +613,7 @@
             spheres.forEach((sphere, index) => {
               if (original.spheres[index]) {
                 sphere.setAttribute('radius', original.spheres[index].radius);
-                sphere.setAttribute('position', original.spheres[index].position);
+                sphere.setAttribute('position', `${original.spheres[index].position.x} ${original.spheres[index].position.y} ${original.spheres[index].position.z}`);
               }
             });
           }
@@ -616,13 +624,19 @@
             cones.forEach((cone, index) => {
               if (original.cones[index]) {
                 const originalCone = original.cones[index];
-                if (cone.hasAttribute('radius-bottom')) {
-                  cone.setAttribute('radius-bottom', originalCone.radius);
+                
+                // Restaurar atributos de radio según el tipo
+                if (originalCone.hasRadiusBottom) {
+                  cone.setAttribute('radius-bottom', originalCone.radiusBottom);
+                  if (originalCone.radiusTop !== null) {
+                    cone.setAttribute('radius-top', originalCone.radiusTop);
+                  }
                 } else {
                   cone.setAttribute('radius', originalCone.radius);
                 }
+                
                 cone.setAttribute('height', originalCone.height);
-                cone.setAttribute('position', originalCone.position);
+                cone.setAttribute('position', `${originalCone.position.x} ${originalCone.position.y} ${originalCone.position.z}`);
               }
             });
           }
