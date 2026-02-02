@@ -581,16 +581,19 @@
         }
 
         // Hacer crecer todas las esferas
-        spheres.forEach((sphere) => {
+        spheres.forEach((sphere, index) => {
           const currentRadius = parseFloat(sphere.getAttribute('radius'));
           const newRadius = currentRadius + 0.08;
           sphere.setAttribute('radius', newRadius);
 
-          // Actualizar posición Y si es necesario
-          const pos = sphere.getAttribute('position');
-          if (pos.y > 0) {
-            pos.y += 0.15;
-            sphere.setAttribute('position', pos);
+          // Solo actualizar posición Y de la PRIMERA esfera (el follaje principal)
+          // Las esferas secundarias (hojas pequeñas) NO deben moverse
+          if (index === 0) {
+            const pos = sphere.getAttribute('position');
+            if (pos.y > 0) {
+              pos.y += 0.15;
+              sphere.setAttribute('position', pos);
+            }
           }
         });
 
