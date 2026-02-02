@@ -35,6 +35,20 @@
       .grow-button:hover {
         background: #2BA3A9;
       }
+      .reset-button {
+        background: #FF6B6B;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 8px;
+        font-weight: bold;
+        width: 100%;
+      }
+      .reset-button:hover {
+        background: #EE5A5A;
+      }
     </style>
   </head>
   <body>
@@ -42,6 +56,7 @@
       <p id="plant-type" style="font-weight: bold; color: #4CC3D9;">Planta cercana</p>
       <p id="plant-name" style="font-size: 12px; margin: 5px 0;">-</p>
       <button class="grow-button" id="grow-btn">Hacer Crecer Planta</button>
+      <button class="reset-button" id="reset-btn">🔄 Resetear Tamaños</button>
     </div>
 
     <a-scene>
@@ -406,8 +421,44 @@
       const plantTypeEl = document.getElementById('plant-type');
       const plantNameEl = document.getElementById('plant-name');
       const growBtn = document.getElementById('grow-btn');
+      const resetBtn = document.getElementById('reset-btn');
       let closestPlant = null;
       const detectionRadius = 6; // Distancia de detección
+      
+      // Guardar dimensiones originales de las plantas
+      const originalDimensions = {};
+      plants.forEach(plant => {
+        const plantId = plant.id;
+        originalDimensions[plantId] = {};
+        
+        const cylinder = plant.querySelector('a-cylinder');
+        if (cylinder) {
+          originalDimensions[plantId].cylinder = {
+            radius: parseFloat(cylinder.getAttribute('radius')),
+            height: parseFloat(cylinder.getAttribute('height')),
+            position: { ...cylinder.getAttribute('position') }
+          };
+        }
+        
+        const spheres = plant.querySelectorAll('a-sphere');
+        originalDimensions[plantId].spheres = [];
+        spheres.forEach(sphere => {
+          originalDimensions[plantId].spheres.push({
+            radius: parseFloat(sphere.getAttribute('radius')),
+            position: { ...sphere.getAttribute('position') }
+          });
+        });
+        
+        const cones = plant.querySelectorAll('a-cone');
+        originalDimensions[plantId].cones = [];
+        cones.forEach(cone => {
+          originalDimensions[plantId].cones.push({
+            radius: parseFloat(cone.getAttribute('radius')) || parseFloat(cone.getAttribute('radius-bottom')),
+            height: parseFloat(cone.getAttribute('height')),
+            position: { ...cone.getAttribute('position') }
+          });
+        });
+      });
 
       // Función para calcular distancia 3D
       function getDistance(pos1, pos2) {
@@ -528,6 +579,59 @@
         if (closestPlant) {
           growPlant(closestPlant);
         }
+      });
+
+      // Función para resetear las plantas a su tamaño original
+      function resetAllPlants() {
+        plants.forEach(plant => {
+          const plantId = plant.id;
+          const original = originalDimensions[plantId];
+          
+          if (!original) return;
+          
+          // Resetear cilindro
+          if (original.cylinder) {
+            const cylinder = plant.querySelector('a-cylinder');
+            if (cylinder) {
+              cylinder.setAttribute('radius', original.cylinder.radius);
+              cylinder.setAttribute('height', original.cylinder.height);
+              cylinder.setAttribute('position', original.cylinder.position);
+            }
+          }
+          
+          // Resetear esferas
+          if (original.spheres) {
+            const spheres = plant.querySelectorAll('a-sphere');
+            spheres.forEach((sphere, index) => {
+              if (original.spheres[index]) {
+                sphere.setAttribute('radius', original.spheres[index].radius);
+                sphere.setAttribute('position', original.spheres[index].position);
+              }
+            });
+          }
+          
+          // Resetear conos
+          if (original.cones) {
+            const cones = plant.querySelectorAll('a-cone');
+            cones.forEach((cone, index) => {
+              if (original.cones[index]) {
+                const originalCone = original.cones[index];
+                if (cone.hasAttribute('radius-bottom')) {
+                  cone.setAttribute('radius-bottom', originalCone.radius);
+                } else {
+                  cone.setAttribute('radius', originalCone.radius);
+                }
+                cone.setAttribute('height', originalCone.height);
+                cone.setAttribute('position', originalCone.position);
+              }
+            });
+          }
+        });
+      }
+
+      // Evento del botón para resetear
+      resetBtn.addEventListener('click', () => {
+        resetAllPlants();
       });
 
       // También permitir hacer crecer con tecla ENTER
